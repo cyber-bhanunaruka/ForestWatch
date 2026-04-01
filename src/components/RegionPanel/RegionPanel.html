@@ -1,0 +1,59 @@
+<div class="panel glass-card animate-fade-in-up">
+    <div class="panel__header">
+      <div>
+        <h3 class="panel__name">{{ region.name }}</h3>
+        <span class="panel__country">{{ region.country }}</span>
+      </div>
+      <button class="panel__close" @click="handleClose" :aria-label="t.closeAria">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="panel__threat">
+      <span class="panel__threat-badge" :style="{ background: threatColor(region.threatLevel) + '20', color: threatColor(region.threatLevel) }">
+        {{ region.threatLevel }}
+      </span>
+      <span v-if="region.biome" class="panel__biome">{{ region.biome }}</span>
+    </div>
+
+    <p v-if="region.description" class="panel__desc">{{ region.description }}</p>
+
+    <div class="panel__bar-section">
+      <div class="panel__bar-header">
+        <span>{{ t.coverTitle }}</span>
+        <span class="panel__bar-percent">{{ coverPercent }}%</span>
+      </div>
+      <div class="panel__bar-track">
+        <div class="panel__bar-fill" :style="{ width: barWidth }"></div>
+      </div>
+    </div>
+
+    <div class="panel__grid">
+      <div class="panel__metric">
+        <span class="panel__metric-value">{{ formatArea(region.totalArea) }}</span>
+        <span class="panel__metric-label">{{ t.totalAreaLabel }}</span>
+      </div>
+      <div class="panel__metric">
+        <span class="panel__metric-value">{{ formatArea(region.remainingArea) }}</span>
+        <span class="panel__metric-label">{{ t.remainingLabel }}</span>
+      </div>
+      <div class="panel__metric">
+        <span class="panel__metric-value panel__metric-value--danger">{{ formatArea(region.annualLoss) }}</span>
+        <span class="panel__metric-label">{{ t.annualLossLabel }}</span>
+      </div>
+      <div class="panel__metric">
+        <span class="panel__metric-value">{{ region.trend }}%</span>
+        <span class="panel__metric-label">{{ t.trendLabel }}</span>
+      </div>
+      <div class="panel__metric">
+        <span class="panel__metric-value">{{ region.biodiversityIndex }}</span>
+        <span class="panel__metric-label">{{ t.biodiversityLabel }}</span>
+      </div>
+      <div class="panel__metric">
+        <span class="panel__metric-value">{{ region.carbonStock }} {{ t.carbonUnit }}</span>
+        <span class="panel__metric-label">{{ t.carbonStockLabel }}</span>
+      </div>
+    </div>
+  </div>

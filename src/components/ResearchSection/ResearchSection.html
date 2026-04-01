@@ -1,0 +1,70 @@
+<SectionShell id="research" gradient>
+  <SectionHeader
+    :label="t.label"
+    :title="research.title"
+    :subtitle="research.subtitle"
+  />
+
+  <h3 class="sub-title">{{ t.usersTitle }}</h3>
+  <div class="card-grid animate-fade-in-up stagger-1" style="margin-bottom: 64px">
+    <IconCard
+      v-for="user in research.users"
+      :key="user.name"
+      :icon-path="ICONS[user.icon]"
+      variant="gradient"
+      :title="user.name"
+      :description="user.description"
+    />
+  </div>
+
+  <h3 class="sub-title">{{ t.painPointsTitle }}</h3>
+  <div class="card-grid animate-fade-in-up stagger-2" style="margin-bottom: 64px">
+    <IconCard
+      v-for="pain in research.painPoints"
+      :key="pain.label"
+      :icon-path="ICONS[pain.icon]"
+      variant="danger"
+      :title="pain.label"
+      :description="pain.description"
+    />
+  </div>
+
+  <h3 class="sub-title">{{ t.personasTitle }}</h3>
+  <div class="card-grid--wide animate-fade-in-up stagger-3" style="margin-bottom: 64px">
+    <div
+      v-for="persona in research.personas"
+      :key="persona.name"
+      class="persona glass-card"
+    >
+      <div class="persona__avatar">
+        {{ persona.name.split(' ').map(n => n[0]).join('') }}
+      </div>
+      <h4 class="persona__name">{{ persona.name }}</h4>
+      <span class="persona__role">{{ persona.role }}</span>
+      <div class="persona__divider"></div>
+      <div class="persona__section">
+        <span class="tag tag--pain">{{ t.painPointTag }}</span>
+        <p>{{ persona.pain }}</p>
+      </div>
+      <div class="persona__section">
+        <span class="tag tag--goal">{{ t.goalTag }}</span>
+        <p>{{ persona.goal }}</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">{{ t.insightsTitle }}</h3>
+  <div class="card-grid animate-fade-in-up stagger-4">
+    <div v-for="insight in research.insights" :key="insight.text" class="insight glass-card">
+      <div class="insight__header">
+        <div class="insight__icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>{{ insight.text }}</h4>
+      </div>
+      <p>{{ insight.detail }}</p>
+    </div>
+  </div>
+</SectionShell>

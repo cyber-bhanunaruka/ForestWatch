@@ -1,0 +1,130 @@
+<section id="dashboard" class="dashboard">
+  <div class="dashboard__header animate-fade-in-up">
+    <div class="dashboard__header-text">
+      <span class="section-label">{{ t.label }}</span>
+      <h2 class="section-title">{{ t.title }}</h2>
+      <p class="section-subtitle" style="max-width: 500px; font-size: 1rem">{{ t.subtitle }}</p>
+    </div>
+    <div class="dashboard__controls">
+      <button
+        :class="['dash-btn', { active: store.viewMode === 'map' }]"
+        :aria-pressed="store.viewMode === 'map'"
+        @click="store.setViewMode('map')"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="8" cy="8" r="2" fill="currentColor"/>
+        </svg>
+        {{ t.mapView }}
+      </button>
+      <button
+        :class="['dash-btn', { active: store.viewMode === 'timeline' }]"
+        :aria-pressed="store.viewMode === 'timeline'"
+        @click="store.setViewMode('timeline')"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 12l3-4 3 2 4-6 2 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ t.timeline }}
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard__body">
+    <aside class="dashboard__sidebar glass-card">
+      <div class="dashboard__search">
+        <svg class="dashboard__search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          v-model="searchInput"
+          type="text"
+          :placeholder="t.searchPlaceholder"
+          :aria-label="t.searchPlaceholder"
+          class="dashboard__search-input"
+        />
+        <button
+          v-if="searchInput"
+          class="dashboard__search-clear"
+          @click="searchInput = ''"
+          :aria-label="t.clearSearchAria"
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="dashboard__filters">
+        <button
+          v-for="level in store.threatLevels"
+          :key="level"
+          :class="['dashboard__filter-btn', { active: store.activeThreatFilter === level }]"
+          @click="store.setThreatFilter(level)"
+        >
+          <span v-if="level !== 'all'" class="dashboard__filter-dot" :style="{ background: threatColor(level) }"></span>
+          {{ level === 'all' ? t.allFilter : level }}
+        </button>
+      </div>
+
+      <div class="dashboard__sidebar-header">
+        <h3>{{ t.regionsTitle }}</h3>
+        <span class="dashboard__count">{{ store.totalFiltered }} / {{ store.totalMonitored }}</span>
+      </div>
+
+      <div class="dashboard__region-list">
+        <button
+          v-for="region in store.filteredRegions"
+          :key="region.id"
+          :class="['dashboard__region-item', { active: store.activeRegionId === region.id }]"
+          @click="handleRegionClick(region)"
+        >
+          <div class="dashboard__region-dot" :style="{ background: threatColor(region.threatLevel) }"></div>
+          <div class="dashboard__region-info">
+            <span class="dashboard__region-name">{{ region.name }}</span>
+            <span class="dashboard__region-country">{{ region.country }}</span>
+          </div>
+          <div class="dashboard__region-loss">
+            <span class="dashboard__region-loss-value">{{ formatArea(region.annualLoss) }}</span>
+            <span class="dashboard__region-loss-label">{{ t.perYear }}</span>
+          </div>
+        </button>
+        <div v-if="store.filteredRegions.length === 0" class="dashboard__empty">
+          <p>{{ t.emptyState }}</p>
+        </div>
+      </div>
+
+      <button v-if="store.activeRegion" class="dashboard__reset" @click="handleReset">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        {{ t.resetBtn }}
+      </button>
+    </aside>
+
+    <div class="dashboard__viewport">
+      <div v-show="store.viewMode === 'map'" ref="mapContainer" class="dashboard__map"></div>
+      <TimelineChart v-if="store.viewMode === 'timeline'" />
+
+      <div v-if="!isLoaded && store.viewMode === 'map'" class="dashboard__loader">
+        <div class="dashboard__loader-spinner"></div>
+        <span>{{ t.loader }}</span>
+      </div>
+
+      <RegionPanel
+        v-if="store.activeRegion && store.viewMode === 'map'"
+        :region="store.activeRegion"
+        @close="handleReset"
+      />
+
+      <div v-if="store.viewMode === 'map'" class="dashboard__legend glass-card">
+        <span class="dashboard__legend-title">{{ t.legend.title }}</span>
+        <div class="dashboard__legend-bar"></div>
+        <div class="dashboard__legend-labels">
+          <span v-for="lbl in t.legend.labels" :key="lbl">{{ lbl }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

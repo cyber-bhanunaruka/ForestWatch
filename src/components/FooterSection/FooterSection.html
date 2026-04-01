@@ -1,0 +1,12 @@
+<footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <AppLogo :size="20" />
+        <span>{{ t.brand }}</span>
+      </div>
+      <p class="footer__copy">&copy; {{ year }} {{ t.copyright }}</p>
+      <div class="footer__links">
+        <a v-for="link in t.links" :key="link.id" :href="`#${link.id}`">{{ link.label }}</a>
+      </div>
+    </div>
+  </footer>

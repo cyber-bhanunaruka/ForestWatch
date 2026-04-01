@@ -1,0 +1,47 @@
+<SectionShell id="ux-strategy">
+  <SectionHeader
+    :label="t.label"
+    :title="uxStrategy.title"
+    :subtitle="uxStrategy.subtitle"
+  />
+
+  <h3 class="sub-title">{{ t.coreTitle }}</h3>
+  <div class="card-grid animate-fade-in-up stagger-1" style="margin-bottom: 64px">
+    <IconCard
+      v-for="feat in uxStrategy.coreFeatures"
+      :key="feat.label"
+      :icon-path="ICONS[feat.icon]"
+      :title="feat.label"
+      :description="feat.description"
+    />
+  </div>
+
+  <h3 class="sub-title">{{ t.flowTitle }}</h3>
+  <div class="flow animate-fade-in-up stagger-2">
+    <div v-for="step in uxStrategy.flow" :key="step.step" class="flow__step">
+      <div class="flow__number">{{ step.step }}</div>
+      <div class="flow__content">
+        <h4>{{ step.label }}</h4>
+        <p>{{ step.description }}</p>
+      </div>
+      <div v-if="step.step < uxStrategy.flow.length" class="flow__connector"></div>
+    </div>
+  </div>
+
+  <div class="advanced glass-card animate-fade-in-up stagger-3">
+    <div class="advanced__header">
+      <span class="advanced__badge">{{ t.advancedBadge }}</span>
+      <h3>{{ t.advancedTitle }}</h3>
+    </div>
+    <div class="advanced__list">
+      <div v-for="(item, i) in uxStrategy.advanced" :key="i" class="advanced__item">
+        <div class="advanced__check">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2.5 7.5l3 3 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p>{{ item }}</p>
+      </div>
+    </div>
+  </div>
+</SectionShell>
