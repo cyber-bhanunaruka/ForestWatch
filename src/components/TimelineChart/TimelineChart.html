@@ -1,0 +1,181 @@
+<div class="timeline">
+    <div class="timeline__header">
+      <h3>{{ t.title }}</h3>
+      <div class="timeline__legend">
+        <span v-for="item in t.legend" :key="item.label" class="timeline__legend-item">
+          <span class="timeline__legend-dot" :style="{ background: item.color }"></span>
+          {{ item.label }}
+        </span>
+      </div>
+    </div>
+
+    <div class="timeline__chart">
+      <svg ref="svgRef" :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet">
+        <line
+          v-for="tick in yTicks"
+          :key="tick"
+          :x1="padding.left"
+          :x2="width - padding.right"
+          :y1="yScale(tick)"
+          :y2="yScale(tick)"
+          stroke="rgba(134,239,172,0.06)"
+          stroke-width="1"
+        />
+
+        <text
+          v-for="tick in yTicks"
+          :key="'label-' + tick"
+          :x="padding.left - 12"
+          :y="yScale(tick) + 4"
+          text-anchor="end"
+          fill="rgba(134,239,172,0.4)"
+          font-size="11"
+          font-family="var(--font-mono)"
+        >
+          {{ (tick / 1000).toFixed(0) }}K
+        </text>
+
+        <text
+          v-for="(d, i) in TIMELINE_DATA"
+          :key="'x-' + d.year"
+          :x="xScale(i)"
+          :y="height - 20"
+          text-anchor="middle"
+          fill="rgba(134,239,172,0.4)"
+          font-size="11"
+          font-family="var(--font-mono)"
+        >
+          {{ d.year }}
+        </text>
+
+        <path
+          :d="lossAreaPath"
+          fill="url(#lossGradient)"
+          :opacity="animate ? 0.3 : 0"
+          style="transition: opacity 1s ease"
+        />
+
+        <path
+          :d="lossPath"
+          fill="none"
+          stroke="#EF4444"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          :stroke-dasharray="animate ? 'none' : '2000'"
+          :stroke-dashoffset="animate ? '0' : '2000'"
+          style="transition: stroke-dashoffset 1.5s ease"
+        />
+        <path
+          :d="gainPath"
+          fill="none"
+          stroke="#22C55E"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          :stroke-dasharray="animate ? 'none' : '2000'"
+          :stroke-dashoffset="animate ? '0' : '2000'"
+          style="transition: stroke-dashoffset 1.5s ease 0.2s"
+        />
+        <path
+          :d="netPath"
+          fill="none"
+          stroke="#F97316"
+          stroke-width="2"
+          stroke-dasharray="6 4"
+          stroke-linecap="round"
+          :opacity="animate ? 0.8 : 0"
+          style="transition: opacity 1s ease 0.5s"
+        />
+
+        <g v-for="(d, i) in TIMELINE_DATA" :key="'pts-' + d.year">
+          <circle
+            :cx="xScale(i)"
+            :cy="yScale(d.globalLoss)"
+            :r="hoveredIndex === i ? 6 : 4"
+            fill="#EF4444"
+            stroke="#050a06"
+            stroke-width="2"
+            :opacity="animate ? 1 : 0"
+            style="cursor: pointer; transition: all 0.3s ease"
+            @mouseenter="hoveredIndex = i"
+            @mouseleave="hoveredIndex = null"
+          />
+          <circle
+            :cx="xScale(i)"
+            :cy="yScale(d.globalGain)"
+            :r="hoveredIndex === i ? 6 : 4"
+            fill="#22C55E"
+            stroke="#050a06"
+            stroke-width="2"
+            :opacity="animate ? 1 : 0"
+            style="cursor: pointer; transition: all 0.3s ease"
+            @mouseenter="hoveredIndex = i"
+            @mouseleave="hoveredIndex = null"
+          />
+        </g>
+
+        <g v-if="hoveredIndex !== null">
+          <rect
+            :x="xScale(hoveredIndex) - 70"
+            :y="yScale(TIMELINE_DATA[hoveredIndex].globalLoss) - 70"
+            width="140"
+            height="56"
+            rx="8"
+            fill="rgba(11,29,15,0.95)"
+            stroke="rgba(34,197,94,0.2)"
+            stroke-width="1"
+          />
+          <text
+            :x="xScale(hoveredIndex)"
+            :y="yScale(TIMELINE_DATA[hoveredIndex].globalLoss) - 50"
+            text-anchor="middle"
+            fill="#f0fdf4"
+            font-size="12"
+            font-weight="600"
+          >
+            {{ TIMELINE_DATA[hoveredIndex].year }}
+          </text>
+          <text
+            :x="xScale(hoveredIndex)"
+            :y="yScale(TIMELINE_DATA[hoveredIndex].globalLoss) - 32"
+            text-anchor="middle"
+            fill="#EF4444"
+            font-size="11"
+            font-family="var(--font-mono)"
+          >
+            {{ t.tooltipLoss }}: {{ (TIMELINE_DATA[hoveredIndex].globalLoss / 1000).toFixed(1) }}{{ t.unit }}
+          </text>
+          <text
+            :x="xScale(hoveredIndex)"
+            :y="yScale(TIMELINE_DATA[hoveredIndex].globalLoss) - 18"
+            text-anchor="middle"
+            fill="#22C55E"
+            font-size="11"
+            font-family="var(--font-mono)"
+          >
+            {{ t.tooltipGain }}: {{ (TIMELINE_DATA[hoveredIndex].globalGain / 1000).toFixed(1) }}{{ t.unit }}
+          </text>
+        </g>
+
+        <defs>
+          <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#EF4444" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="#EF4444" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <text
+          :x="padding.left - 50"
+          :y="padding.top + chartHeight / 2"
+          text-anchor="middle"
+          fill="rgba(134,239,172,0.3)"
+          font-size="11"
+          font-family="var(--font-mono)"
+          transform="rotate(-90, 20, 270)"
+        >
+          {{ t.axisLabel }}
+        </text>
+      </svg>
+    </div>
+  </div>

@@ -1,0 +1,50 @@
+<SectionShell id="problem">
+  <SectionHeader
+    :label="t.label"
+    :title="problem.title"
+    :subtitle="problem.subtitle"
+  />
+
+  <div class="context-grid animate-fade-in-up stagger-1">
+    <div class="context-block glass-card">
+      <h3 class="context-label">{{ t.contextTitle }}</h3>
+      <p>{{ problem.context }}</p>
+    </div>
+    <div class="context-block context-block--highlight glass-card">
+      <h3 class="context-label">{{ t.statementTitle }}</h3>
+      <p class="statement">{{ problem.statement }}</p>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom: 64px">
+    <StatCard
+      v-for="(stat, i) in problem.stats"
+      :key="stat.label"
+      :class="[`animate-fade-in-up stagger-${i + 1}`]"
+      :value="stat.value"
+      :label="stat.label"
+      :icon-path="ICONS[stat.icon]"
+    />
+  </div>
+
+  <h3 class="sub-title">{{ t.goalsTitle }}</h3>
+  <div class="card-grid" style="margin-bottom: 64px">
+    <IconCard
+      v-for="goal in problem.goals"
+      :key="goal.label"
+      :icon-path="ICONS[goal.icon]"
+      :title="goal.label"
+      :description="goal.description"
+    />
+  </div>
+
+  <div class="pain-box glass-card animate-fade-in-up stagger-6">
+    <h3 class="sub-title">{{ t.painPointsTitle }}</h3>
+    <div class="pain-list">
+      <div v-for="(point, i) in problem.painPoints" :key="i" class="pain-item">
+        <span class="pain-num">{{ String(i + 1).padStart(2, '0') }}</span>
+        <p>{{ point }}</p>
+      </div>
+    </div>
+  </div>
+</SectionShell>

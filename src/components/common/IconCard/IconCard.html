@@ -1,0 +1,20 @@
+<div class="icon-card glass-card">
+  <div v-if="iconPath" :class="['icon-card__icon', `icon-card__icon--${variant}`]">
+    <svg
+      viewBox="0 0 24 24"
+      :width="iconSize"
+      :height="iconSize"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path :d="iconPath" />
+    </svg>
+  </div>
+  <slot name="icon" />
+  <h4 v-if="title" class="icon-card__title">{{ title }}</h4>
+  <p v-if="description" class="icon-card__desc">{{ description }}</p>
+  <slot />
+</div>

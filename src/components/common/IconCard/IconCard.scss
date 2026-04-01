@@ -1,0 +1,41 @@
+.icon-card {
+  padding: 28px;
+}
+
+.icon-card__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.icon-card__icon--accent {
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+.icon-card__icon--gradient {
+  background: linear-gradient(135deg, var(--accent), #4ade80);
+  color: #050a06;
+}
+
+.icon-card__icon--danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
+.icon-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.icon-card__desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}

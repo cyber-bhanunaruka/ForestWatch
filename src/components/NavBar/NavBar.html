@@ -1,0 +1,26 @@
+<nav :class="['nav', { 'nav--scrolled': scrolled }]">
+    <div class="nav__inner">
+      <a class="nav__brand" href="#hero" role="button" @click.prevent="scrollTo('hero')">
+        <AppLogo :size="28" aria-hidden="true" />
+        <span class="nav__name">{{ app.brandFirst }}<span class="nav__name--accent">{{ app.brandAccent }}</span></span>
+      </a>
+
+      <div :class="['nav__links', { 'nav__links--open': mobileOpen }]" role="navigation">
+        <button
+          v-for="s in sections"
+          :key="s.id"
+          class="nav__link"
+          @click="scrollTo(s.id)"
+        >
+          {{ s.label }}
+        </button>
+      </div>
+
+      <div class="nav__actions">
+        <span class="nav__badge">{{ nav.badge }}</span>
+        <button class="nav__hamburger" @click="mobileOpen = !mobileOpen" :aria-label="nav.toggleMenuAria" :aria-expanded="mobileOpen">
+          <span :class="['nav__hamburger-line', { 'open': mobileOpen }]"></span>
+        </button>
+      </div>
+    </div>
+  </nav>

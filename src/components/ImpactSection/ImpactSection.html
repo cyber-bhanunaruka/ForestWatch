@@ -1,0 +1,39 @@
+<SectionShell id="impact" gradient extra-bottom-padding>
+  <SectionHeader
+    :label="t.label"
+    :title="impact.title"
+    :subtitle="impact.subtitle"
+  />
+
+  <div class="card-grid" style="margin-bottom: 64px">
+    <div
+      v-for="(metric, i) in impact.metrics"
+      :key="metric.label"
+      :class="['metric glass-card animate-fade-in-up', `stagger-${i + 1}`]"
+    >
+      <div class="metric__value gradient-text--green">{{ metric.value }}</div>
+      <div class="metric__label">{{ metric.label }}</div>
+      <div class="metric__compare">
+        <div class="metric__side">
+          <span class="tag tag--before">{{ t.beforeTag }}</span>
+          <span>{{ metric.before }}</span>
+        </div>
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" class="metric__arrow">
+          <path d="M0 6h18m0 0l-4-4m4 4l-4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="metric__side">
+          <span class="tag tag--after">{{ t.afterTag }}</span>
+          <span>{{ metric.after }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta glass-card animate-fade-in-up stagger-5">
+    <h3>{{ t.ctaTitle }}</h3>
+    <p>{{ t.ctaDescription }}</p>
+    <div class="cta__stack">
+      <span v-for="tag in t.techStack" :key="tag" class="cta__tag">{{ tag }}</span>
+    </div>
+  </div>
+</SectionShell>
